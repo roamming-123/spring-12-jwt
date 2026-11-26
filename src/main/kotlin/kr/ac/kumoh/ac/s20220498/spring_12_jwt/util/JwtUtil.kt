@@ -59,9 +59,10 @@ class JwtUtil {
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
+                .payload
 
             // Validation (유효성 검증)
-            claims.payload.expiration.after(Date())
+            claims.expiration.after(Date())
         } catch (e: SecurityException) {
             // Verification 실패 (서명 위조 등)
             false
@@ -71,5 +72,12 @@ class JwtUtil {
         } catch (e: Exception) {
             false
         }
+    }
+    fun extractUsername(token: String): String {
+        return Jwts.parser()
+            .verifyWith(key)
+            .build()
+            .parseSignedClaims(token)
+            .payload.subject
     }
 }
